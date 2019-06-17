@@ -10,14 +10,14 @@
 	</parent>
 
 	<groupId>gzres</groupId>
-	<artifactId>exchange-rates</artifactId>
+	<artifactId>exchangeRates</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>exchangeRates</name>
+	<name>Exchange Rates</name>
 	<description>Service gets exchange rates from different banks and store them in db</description>
 	<packaging>jar</packaging>
 
 	<properties>
-		<java.version>1.11</java.version>
+		<java.version>1.8</java.version>
 		<kotlin.version>1.2.71</kotlin.version>
 	</properties>
 
@@ -51,6 +51,14 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -60,6 +68,13 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.jetbrains.kotlin</groupId>
