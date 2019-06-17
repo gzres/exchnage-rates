@@ -1,0 +1,6 @@
+spring:
+  data:
+    mongodb:
+      host: service-db
+      port: 27017
+      database: exchange-rates
