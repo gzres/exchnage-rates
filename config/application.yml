@@ -4,3 +4,7 @@ spring:
       host: localhost
       port: 27017
       database: exchange-rates
+
+tasks:
+  nbp:
+    startTime: 0 50 23 * * 1-5

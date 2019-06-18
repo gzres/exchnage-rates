@@ -1,7 +1,8 @@
 package gzres.exchangeRates.providers
 
 import gzres.exchangeRates.rates.dao.Rate
+import java.time.LocalDate
 
 interface Provider {
-    fun getExchangeRates(): List<Rate>
+    fun getExchangeRates(date: LocalDate): List<Rate>
 }

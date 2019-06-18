@@ -20,12 +20,13 @@ class RatesService(
                             rate.sourceCurrency,
                             rate.targetCurrency,
                             rate.type
-                    ).count() > 1
+                    ).count() == 0
             ) {
 
-                repository.save(rate)
+                repository.insert(rate)
             }
         } catch (e: Exception) {
+            //TODO: Log error
             successful = false
         }
 
