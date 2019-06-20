@@ -1,35 +1,40 @@
 package gzres.exchangeRates.web.controllers
 
+import gzres.exchangeRates.rates.RateNotFoundException
 import gzres.exchangeRates.rates.RatesRepository
-import gzres.exchangeRates.rates.dao.ExchangeType
-import gzres.exchangeRates.rates.dao.ProviderEnum
 import gzres.exchangeRates.rates.dao.Rate
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.time.LocalDate
 import java.util.*
 
-
 @RestController
+@RequestMapping("/rates")
 class RatesApi(
         @Autowired private val ratesRepo: RatesRepository
 ) {
-    @GetMapping("/rates")
+    @GetMapping("/{id}")
+    fun getOne(@PathVariable id: String): Rate {
+
+        val uid = UUID.fromString(id)
+
+        return ratesRepo.findById(uid)
+                .orElseThrow { RateNotFoundException(uid) }
+    }
+
+    @GetMapping
     fun getAll(): List<Rate> {
         return ratesRepo.findAll()
     }
 
-    @PostMapping("/rates/date")
-    fun getByDate(@RequestParam date: LocalDate): List<Rate> {
-        return ratesRepo.findByDate(date)
+    @GetMapping("/date/{date}")
+    fun getByDate(@PathVariable date: String): List<Rate> {
+        val localDate = LocalDate.parse(date)
+        return ratesRepo.findByDate(localDate)
     }
 
-    @GetMapping("/rates/clean")
-    fun clean(): List<Rate> {
-        ratesRepo.deleteAll()
-        return ratesRepo.findAll()
+    @DeleteMapping("/{id}")
+    fun deleteRate(@PathVariable id: UUID) {
+        ratesRepo.deleteById(id)
     }
 }
