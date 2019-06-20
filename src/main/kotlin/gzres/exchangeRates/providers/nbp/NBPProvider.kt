@@ -7,18 +7,21 @@ import gzres.exchangeRates.providers.nbp.dao.NBPRate
 import gzres.exchangeRates.rates.dao.ExchangeType
 import gzres.exchangeRates.rates.dao.ProviderEnum
 import gzres.exchangeRates.rates.dao.Rate
-import org.springframework.format.annotation.DateTimeFormat
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.net.URL
-import java.text.SimpleDateFormat
+import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
 @Service
 class NBPProvider : RatesProvider() {
+
+    private val logger: Logger = LogManager.getLogger()
+
     override fun getExchangeRates(date: LocalDate): List<Rate> {
 
         val list = mutableListOf<Rate>()
@@ -31,6 +34,10 @@ class NBPProvider : RatesProvider() {
     }
 
     private fun getExchangeRatesFromTable(date: LocalDate, tableName: String): List<Rate> {
+
+        if (tableName == "B" && DayOfWeek.WEDNESDAY != date.dayOfWeek) {
+            return ArrayList()
+        }
 
         val url = URL(
                 API_URL
@@ -45,11 +52,11 @@ class NBPProvider : RatesProvider() {
                 parseExchangeRate(url)
             }
             HttpStatus.NOT_FOUND -> {
-                //TODO: Log information about empty data
+                logger.warn("Not found data for table $tableName for date $date")
                 ArrayList()
             }
             else -> {
-                //TODO: Log "Not handled status: $serviceStatus"
+                logger.error("Not handled status: $serviceStatus during processing table $tableName")
                 ArrayList()
             }
         }
@@ -58,19 +65,18 @@ class NBPProvider : RatesProvider() {
     private fun parseExchangeRate(url: URL, date: LocalDate = LocalDate.now()): ArrayList<Rate> {
         val result = ArrayList<Rate>()
 
-        val response = ObjectMapper().readValue(
-                url,
-                Array<NBPExchangeRates>::class.java
-        )
-
-        response!!.forEach { nbpExchangeRates ->
-            nbpExchangeRates.rates.forEach {
-                try {
+        try {
+            val response = ObjectMapper().readValue(
+                    url,
+                    Array<NBPExchangeRates>::class.java
+            )
+            response!!.forEach { nbpExchangeRates ->
+                nbpExchangeRates.rates.forEach {
                     result.add(convertNBPRateToRate(it, date))
-                } catch (exception: Exception) {
-                    //TODO Log information about changed schema
                 }
             }
+        } catch (e: Exception) {
+            logger.error("Error during parsing NBP rates", e)
         }
 
         return result

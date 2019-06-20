@@ -18,7 +18,7 @@ class NBPTask(
     @Scheduled(cron = "\${tasks.nbp.startTime}")
     override fun action() {
         importRates(LocalDate.now())
-        //TODO Log success message
+        logger.info("Importing rates from NBP completed")
     }
 
 }
