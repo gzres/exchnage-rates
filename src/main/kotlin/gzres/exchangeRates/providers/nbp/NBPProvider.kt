@@ -49,7 +49,7 @@ class NBPProvider : RatesProvider() {
 
         return when (val serviceStatus = getServiceStatus(url)) {
             HttpStatus.OK -> {
-                parseExchangeRate(url)
+                parseExchangeRate(url, date)
             }
             HttpStatus.NOT_FOUND -> {
                 logger.warn("Not found data for table $tableName for date $date")
@@ -76,7 +76,7 @@ class NBPProvider : RatesProvider() {
                 }
             }
         } catch (e: Exception) {
-            logger.error("Error during parsing NBP rates", e)
+            logger.error("Error during parsing $PROVIDER_NAME rates", e)
         }
 
         return result
