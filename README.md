@@ -2,7 +2,7 @@
 
 This is the source code for the service that gets exchange rates from external sources and aggregates them in database
 
-##Currently supported providers:
+## Currently supported providers:
 * European Central Bank
 * National Bank of Poland
 
