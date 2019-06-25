@@ -8,3 +8,5 @@ spring:
 tasks:
   nbp:
     startTime: 0 50 23 * * 1-5
+  ecb:
+    startTime: 30 50 23 * * 1-5

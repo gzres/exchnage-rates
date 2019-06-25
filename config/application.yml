@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      host: service-db
+      host: localhost
       port: 27017
       database: exchange-rates
 
